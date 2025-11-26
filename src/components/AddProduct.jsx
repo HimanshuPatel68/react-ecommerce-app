@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -91,37 +91,38 @@ const AddProduct = () => {
       new Blob([JSON.stringify(product)], { type: "application/json" })
     );
 
-    axios
-      .post(`${baseUrl}/api/product`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        toast.success("Product added successfully");
-        setProduct({
-          name: "",
-          brand: "",
-          description: "",
-          price: "",
-          category: "",
-          stockQuantity: "",
-          releaseDate: "",
-          productAvailable: false,
-        });
-        setImage(null);
-        setImagePreview(null);
-        setValidated(false);
-        setErrors({});
-        navigate("/");
-      })
-      .catch((error) => {
-        if (error.response && error.response.data) {
-          setErrors(error.response.data);
-        } else {
-          toast.error("Error adding product");
-        }
-        setLoading(false);
-      });
-  };
+   API.post("/product", formData, {
+  headers: { "Content-Type": "multipart/form-data" },
+})
+  .then((response) => {
+    toast.success("Product added successfully");
+
+    setProduct({
+      name: "",
+      brand: "",
+      description: "",
+      price: "",
+      category: "",
+      stockQuantity: "",
+      releaseDate: "",
+      productAvailable: false,
+    });
+
+    setImage(null);
+    setImagePreview(null);
+    setValidated(false);
+    setErrors({});
+    navigate("/");
+  })
+  .catch((error) => {
+    if (error.response && error.response.data) {
+      setErrors(error.response.data);
+    } else {
+      toast.error("Error adding product");
+    }
+    setLoading(false);
+  });
+
 
   return (
     <div className="container mt-5 pt-4">
